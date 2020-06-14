@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		.btnStyle{
+			width: 100%;
+  			height: 100%;
+  			font-size: 30px;
+			font-family: inherit;
+			background-color: white;
+			border: 1px solid transparent;
+			outline: none;
+			display: flex;
+		  	justify-content: center;
+		  	align-items: center;
+			}
+		.calculator{
+			width: 400px;
+			height: 520px;
+			background-color: #3FBFBF;
+			margin: 5% auto;
+			border: 2px solid #3FBFBF;
+		}
+		.screen{
+			display: flex;
+			justify-content: flex-end;
+			height: 30px;
+			padding-right: 10%;
+			padding-top: 1%;
+			color: white;
+			font-size: 30px;
+		}
+		body{
+			background: #BABABA;
+		}
+	</style>
+	
+	
+</head>
+
+<body>
+	<div id="root"></div>
+	<script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
+	<script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
+	<script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+
+	<script type="text/babel">
+function Calculator(){
+const [firstNumber, setFirstNumber] = React.useState('');
+const [secondNumber, setSecondNumber] = React.useState('');
+const [result, setReasult] = React.useState(0);
+const [operation, setOperation] = React.useState('');
+	
+const ResultScreen = () => {
+	return (
+		<div className="screen">
+  			  {result}
+  		</div>
+
+	)
+}
+
+const ComputationScreen = () => {
+	return (
+		<div className="screen" style={{fontSize:'20px'}}>
+    		{firstNumber}{operation}{secondNumber}
+  		</div>
+	)
+} 
+const Screen = () => {
+	return (
+		<div style = {{height: '70px'}}>
+			<ResultScreen/>
+			<ComputationScreen/>
+		</div>
+	)
+}
+
+const KeypadRow = (props) => {
+	return (
+		<div style = {{height: '90px',  width: '100%', display: 'flex'}}>
+			{props.children}
+		</div>
+	)
+} 
+
+const Keypad = () => {
+	return(
+		<div style = {{height: '500px', width: '400px'}}>
+			<KeypadRow>
+				<ClearAllButton value="C"></ClearAllButton>
+				<ClearButton >&larr;</ClearButton>
+				<OperationButton value= '%'>%</OperationButton>
+				<OperationButton value= '/'>/</OperationButton>
+			</KeypadRow>
+			
+			<KeypadRow>
+				<NumberButton value="9"></NumberButton>
+				<NumberButton value="8"></NumberButton>
+				<NumberButton value="7"></NumberButton>
+				<OperationButton value= '*'>*</OperationButton>
+			</KeypadRow>
+			
+			<KeypadRow>
+				<NumberButton value="6"></NumberButton>
+				<NumberButton value="5"></NumberButton>
+				<NumberButton value="4"></NumberButton>
+				<OperationButton value= '-'>-</OperationButton>
+				
+			</KeypadRow>
+			
+			<KeypadRow>
+				<NumberButton value="3"></NumberButton>
+				<NumberButton value="2"></NumberButton>
+				<NumberButton value="1"></NumberButton>
+				<OperationButton value="+">+</OperationButton>
+			</KeypadRow>
+			
+			
+			<KeypadRow>
+				<NumberButton value="0">0</NumberButton>
+				<NumberButton value= ".">.</NumberButton>
+				<EqualButton>=</EqualButton>
+			</KeypadRow>
+				
+		</div>
+	
+	)
+}
+
+const handleNumberClick = (event) => {
+	if(operation == ""){
+		setFirstNumber(firstNumber + event.target.value)	
+	}
+	else{
+		setSecondNumber(secondNumber + event.target.value)
+	}
+}
+
+const handleClearAllClick = () =>{
+	setFirstNumber('') || setSecondNumber('') || setOperation('') || setReasult('')
+}
+const handleClearClick = () => {
+	if(secondNumber != ''){
+		setSecondNumber(secondNumber.substring(0, secondNumber.length - 1))
+	}
+	else if(operation != ''){
+		setOperation(operation.substring(0, operation.length-1))
+	}
+	else{
+		setFirstNumber(firstNumber.substring(0, firstNumber.length-1))  
+	}
+}
+const handleEqualClick = () => {
+	if(operation == '+'){
+		setReasult(+firstNumber + +secondNumber)   
+	   }
+	else if(operation == '-'){
+		setReasult(+firstNumber - +secondNumber)
+	}
+	else if(operation == '*'){
+		setReasult(+firstNumber * +secondNumber)
+	}
+	else if(operation == '/'){
+		setReasult(+firstNumber / +secondNumber)
+	}
+	else{
+		setReasult(+firstNumber  / 100)
+	}
+	
+}
+const handleOperationlClick = (event) => {
+	setOperation(event.target.value)
+}
+
+
+const NumberButton  = (props) => {
+	return(
+		<div style = {{width: '25%'}}>
+			<button className="btnStyle" onClick = {handleNumberClick} value={props.value}>
+    			{props.value}
+  			</button>
+		</div>
+	)
+}
+const ClearAllButton  = (props) => {
+	return(
+		<div style = {{width: '25%'}}>
+			<button className="btnStyle" onClick = {handleClearAllClick} value={props.value}>
+    			{props.value}
+  			</button>
+		</div>
+	)
+}
+
+
+const ClearButton  = (props) => {
+	return(
+		<div style = {{width: '25%'}}>
+			<button className="btnStyle" onClick = {handleClearClick} value={props.value}>
+    			{props.children}
+  			</button>
+		</div>
+	)
+}
+
+const EqualButton  = (props) => {
+	return(
+		<div style = {{width: '50%'}}>
+			<button className="btnStyle"  style = {{backgroundColor: '#3FBFBF', color:'white'}} onClick = {handleEqualClick}  value={props.value}>
+    			{props.children}
+  			</button>
+		</div>
+	)
+}
+const OperationButton  = (props) => {
+	return(
+		<div style = {{width: '25%'}}>
+			<button className="btnStyle" style= {{color:'#3FBFBF'}} onClick = {handleOperationlClick}  value={props.value}>
+    			{props.children}
+  			</button>
+		</div>
+	)
+}
+
+
+const Button  = (props) => {
+	return(
+		<div style = {{width: '25%'}}>
+			<button className="btnStyle"  value={props.value}>
+    			{props.children}
+  			</button>
+		</div>
+	)
+}
+
+
+	return (
+		<div class = "calculator">
+			<Screen/>
+			<Keypad/>
+		</div>
+	)
+}
+
+
+		ReactDOM.render(<Calculator/>, document.getElementById('root'))
+
+	</script>
+</body>
+
+</html>
