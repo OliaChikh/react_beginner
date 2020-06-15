@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<div id="root"></div>
+	<script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
+	<script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
+	<script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+	<script type="text/babel">
+
+	const CatInfo = ({facts, imageCat}) => {
+		if (!imageCat) {
+			return '';
+		}
+		return (
+			<div>
+				<div style={{display: 'flex', justifyContent: 'center'}}>
+					<img style={{width: '200px', height:'200px'}} src={imageCat} alt=""/>
+				</div>
+				<div style={{display: 'flex', justifyContent: 'center'}}>
+					<span style = {{width:'60%'}}>{facts}</span>
+				</div>
+			</div>
+		)
+	}
+	const CatsFacts = () =>{
+		let [data, setState] = React.useState({});
+		let [dataImg, setStateImg] = React.useState({});
+		function handleClick() {		
+			fetch('https://cat-fact.herokuapp.com/facts/random')
+					.then(res => res.json())
+					.then(resp => {
+						setState(resp);
+	//					console.log('after fetch ', data)
+				})
+
+			
+			fetch('https://aws.random.cat/meow')
+					.then(res => res.json())
+					.then(resp => {
+						setStateImg(resp)
+				})
+		}
+		return(
+			<>
+			<button onClick = {handleClick}>Next fact</button>
+			<CatInfo facts = {data.text} imageCat = {dataImg.file} />
+			
+			</>
+		)
+	}
+		
+		ReactDOM.render(<CatsFacts/>, document.getElementById('root'));
+		
+	</script>
+	
+</body>
+</html>
