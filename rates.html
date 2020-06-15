@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>rates</title>
+</head>
+<body>
+	<div id="root"></div>
+	<script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
+	<script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
+	<script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+	<script type="text/babel">
+		
+		const Codes = ({codes}) => {
+			const [rate, setRate] = React.useState({});
+			function handleChange(event){
+				//console.log(event.target.value)
+				// https://api.frankfurter.app/latest?from=
+				fetch('https://api.frankfurter.app/latest?from=' + event.target.value)
+					.then(res => res.json())
+					.then(resp => setRate(resp.rates))
+				
+			}
+			const [startSum, setStartSum] = React.useState(0);
+			function writeNumber(event){
+				setStartSum(event.target.value);
+			}
+			const [endCode, setEndCode] = React.useState('AUD');
+			function handleEndSelectChange(event) {
+				setEndCode(event.target.value)
+			}
+			const [endSum, setEndSum] = React.useState(0);
+			function calculate (event){
+				
+				setEndSum(startSum * rate[endCode]);
+			}
+			
+			return(
+				<div>
+					<div style={{marginBottom:'10px'}}>
+					<select onChange = {handleChange}>
+						{Object.keys(codes).map(prop => <option value = {prop}>{prop}</option>)}
+					</select>
+					<input style={{marginLeft:'10px'}} onChange = {writeNumber}/>
+					</div>
+					<div style={{marginBottom:'10px'}}>
+						<select onChange = {handleEndSelectChange}>
+							{Object.keys(codes).map(prop => <option value = {prop}>{prop}</option>)}
+						</select>
+						<input style={{marginLeft:'10px'}} value={endSum}/>
+					</div>
+					<button onClick = {calculate}>Count</button>
+					<ul>
+						{Object.entries(rate).map(prop => <li>{prop[0]} : {prop[1]}</li>)}
+					</ul>
+				</div>
+			)
+		}
+		let code;
+		fetch('https://api.frankfurter.app/currencies')
+					.then(res => res.json())
+						.then(resp => ReactDOM.render(<Codes codes = {resp}/>, document.getElementById('root')))
+				
+	
+	
+
+		
+
+		
+	</script>
+</body>
+</html>
