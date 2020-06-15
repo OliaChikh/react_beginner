@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+
+<body>
+	<div id="root"></div>
+	<script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
+	<script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
+	<script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+	<script type="text/babel">
+		
+		const ImageInfo = ({author, url, ...rest}) => {
+			
+			return (
+				<>
+					<h1>{author}</h1>
+					<img src={url} style = {{width: "100px", height: "100px"}}/>
+				</>
+			)
+		}
+
+		const ImageGalery = () => {
+			
+			
+			const [photos, setPhotos] = React.useState([]);
+			function handleClick (){
+				fetch('https://picsum.photos/v2/list')
+					.then(res => res.json())
+						.then(resp => setPhotos(resp))
+			}
+			
+			return (
+				<div>
+					<button onClick={handleClick}>Show photos</button>
+					<ul>
+						{photos.map(photo => <li><ImageInfo author = {photo.author} url = {photo.download_url} /></li>)}
+					</ul>
+				</div>
+			);
+			
+		}
+
+		ReactDOM.render(<ImageGalery/>, document.getElementById('root'))
+
+			
+		
+	
+
+	</script>
+</body>
+
+</html>
+
+
+
+

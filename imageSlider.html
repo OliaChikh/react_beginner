@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+
+<body>
+	<div id="root"></div>
+	<script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
+	<script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
+	<script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+	<script type="text/babel">
+
+		
+		
+		
+		
+		const Image = ({author, url, download_url, heightImg, widthImg}) => {
+			
+			return <div style = {{width: '70%', margin: 'auto'}}>
+				<img src = {download_url} style = {{width: '100%', height: '500px'}}/>
+				<div style={{display: "flex", justifyContent: 'space-between'}}>
+					<span> {author}</span>
+					<a href={url}>Link </a>
+					<span>Size : height - {heightImg}, width -{widthImg} </span>
+				</div>
+			</div>
+		}
+		const ImageGalery = () => {
+			const [index, setIndex] = React.useState(
+				+window.localStorage.getItem('indexImg') || 0
+			);
+			
+			React.useEffect(()=>{
+				window.localStorage.setItem('indexImg', index)
+			})
+			
+			
+			function handlePrev(){
+			
+				setIndex(index-1)
+				setEffect('')
+			}
+			function handleNext(){
+				
+				setIndex(index+1)
+				setEffect('')
+			}
+
+			const [effect, setEffect] = React.useState('');
+			function addGreyEffect(){
+				setEffect("?grayscale") 
+			}
+			console.log('myIndex = ', index);
+			return (
+				<>
+				<span style = {{display: "flex", justifyContent: 'center', marginBottom: "10px"}}>{index+1} of {data.length}</span>
+				<Image author = {data[index].author} url = {data[index].url} download_url = {data[index].download_url + effect}  
+				heightImg = {data[index].height} widthImg = {data[index].width}/>
+				<div style={{display: "flex", justifyContent: 'center', marginTop: "10px"}}>
+					<button onClick ={handlePrev} disabled ={index == 0}>Prev</button>
+					<button onClick = {handleNext} disabled = {index == data.length -1}>Next</button>
+					<button onClick={addGreyEffect}>add grey effect</button>
+				</div>
+				</>
+			)
+		}
+//		console.log('render');
+		
+		
+				let data;
+		fetch('https://picsum.photos/v2/list')
+				.then(res => res.json())
+				.then(resp => {
+					data = resp;
+					ReactDOM.render(<ImageGalery/>, document.getElementById('root'));
+		})
+		
+
+			
+		
+	
+
+	</script>
+</body>
+
+</html>
+
+
+
+
